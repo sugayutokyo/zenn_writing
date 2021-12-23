@@ -2,6 +2,8 @@
 title: 'microCMS'
 ---
 
+## microCMS とは
+
 ## サービスの作成
 
 1. サービス名、サービス ID を入力して「次へ」押下
@@ -42,7 +44,7 @@ $ touch .env.local
 ```
 
 ```js:.env.local
-text
+API_KEY = 'X-MICROCMS-API-KEYを入力する'
 ```
 
 2. microCMS の準備
@@ -61,10 +63,10 @@ $ touch ./libs/client.js
 
 ```js: libs/client.js
 // libs/client.js
-import { createClient } from 'microcms-js-sdk';
+import { createClient } from 'microcms-js-sdk'
 
 export const client = createClient({
-  serviceDomain: 'service-domain',
+  serviceDomain: 'サービスIDを入力する',
   apiKey: process.env.API_KEY,
 })
 ```
@@ -72,8 +74,8 @@ export const client = createClient({
 3. 記事一覧を表示する
 
 ```jsx:pages/index.js
-import Link from 'next/link';
-import { client } from '../libs/client';
+import Link from 'next/link'
+import { client } from '../libs/client'
 
 export default function Home({ articles }) {
   return (
@@ -114,6 +116,59 @@ export const getServerSideProps = async () => {
 }
 ```
 
+4. 記事の詳細ページを作る
+
+```sh
+$ mkdir ./pages/article
+$ touch ./pages/article/\[id\].js
+```
+
+```jsx:./pages/article/[id].js
+import { client } from '../../libs/client'
+
+export default function Article({ article }) {
+  return (
+    <div class="mt-6 bg-gray-50">
+      <div class=" px-10 py-6 mx-auto">
+        <div class="max-w-6xl px-10 py-6 mx-auto bg-gray-50">
+          <img
+            class="object-cover w-full shadow-sm h-full"
+            src={article.eye_catch.url}
+          />
+          <div class="mt-2">
+            <div class="sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-blue-500  hover:underline">
+              {article.title}
+            </div>
+          </div>
+          <div class="flex items-center justify-start mt-4 mb-4">
+            <div class="px-2 py-1 font-bold bg-red-400 text-white rounded-lg">
+              #{article.tag}
+            </div>
+          </div>
+
+          <div class="mt-2">
+            <div class="text-2xl text-gray-700 mt-4 rounded ">
+              {article.body}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export const getServerSideProps = async (ctx) => {
+  const id = ctx.params.id
+  const data = await client.get({ endpoint: 'articles', contentId: id })
+
+  return {
+    props: {
+      article: data,
+    },
+  }
+}
+```
+
 以下参考にしています。
 ・microCMS
 https://blog.microcms.io/microcms-next-jamstack-blog/
@@ -121,3 +176,4 @@ https://blog.microcms.io/what-is-headlesscms/
 
 ・TailwindCSS
 https://ordinarycoders.com/blog/article/17-tailwindcss-cards
+https://tailwindcomponents.com/component/a-single-blog-detail-page
