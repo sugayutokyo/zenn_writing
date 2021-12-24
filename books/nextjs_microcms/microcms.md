@@ -173,6 +173,7 @@ export const getServerSideProps = async (ctx) => {
 ・microCMS
 https://blog.microcms.io/microcms-next-jamstack-blog/
 https://blog.microcms.io/what-is-headlesscms/
+https://codezine.jp/article/detail/15054
 
 ・TailwindCSS
 https://ordinarycoders.com/blog/article/17-tailwindcss-cards
