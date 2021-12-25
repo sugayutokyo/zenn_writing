@@ -5,6 +5,14 @@ type: "tech" # tech: 技術記事 / idea: アイデア
 topics: []
 published: false
 ---
+## useContext
+
+
+## Recoil
+### Recoilのインストール
+```sh
+$ npm install recoil
+```
 
 エラーメッセージ
 ![](https://i.gyazo.com/833438d6c1fb6dd44d2f8b8befd71215.png)
@@ -23,11 +31,6 @@ next-dev.js?3515:32 Warning: Text content did not match. Server: "0" Client: "4"
     at Root (webpack-internal:///./node_modules/next/dist/client/index.js:891:27) 
 
 See more info here: https://nextjs.org/docs/messages/react-hydration-error
-```
-
-## Recoilのインストール
-```sh
-$ npm install recoil
 ```
 
 参考
