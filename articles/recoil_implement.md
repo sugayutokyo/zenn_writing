@@ -1,5 +1,5 @@
 ---
-title: "Recoil"
+title: "useContextとRecoilの違い"
 emoji: "🐈"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: []
@@ -9,6 +9,8 @@ published: false
 
 
 ## Recoil
+実際にRecoilで状態管理を実装してみました。
+https://github.com/elletech/recoil_implement
 ### Recoilのインストール
 ```sh
 $ npm install recoil
@@ -33,7 +35,11 @@ next-dev.js?3515:32 Warning: Text content did not match. Server: "0" Client: "4"
 See more info here: https://nextjs.org/docs/messages/react-hydration-error
 ```
 
-参考
+## 参考
+### useContext
+https://ja.reactjs.org/docs/hooks-reference.html#usecontext
+https://qiita.com/ragnar1904/items/0a4338523863922952bb
+### Recoil
 https://qiita.com/yoshinoritera55/items/57a14fc08641631452bc
 https://recoiljs.org/docs/introduction/getting-started/
 https://qiita.com/zaburo/items/225d0731faeaa6966ea9
