@@ -1,29 +1,33 @@
 ---
-title: "Next.js(TypeScript)とTailwindCSSとmicroCMSで自作ブログを作成しよう！"
-emoji: "🐙"
-type: "tech" # tech: 技術記事 / idea: アイデア
+title: 'Next.js(TypeScript)とTailwindCSSとmicroCMSで自作ブログを作成しよう！'
+emoji: '💻'
+type: 'tech' # tech: 技術記事 / idea: アイデア
 topics: ['nextjs', 'typescript', 'tailwindcss', 'microcms']
 published: false
 ---
 
+
+
 # 環境構築
 
-## next.jsのプロジェクトを作成する
+## next.js のプロジェクトを作成する
 
 ```shell
 $ npx create-next-app . -e with-tailwindcss
 ```
-今回はTailwindCSSを使うためオプション`with-tailwindcss`をつけます
-ディレクトリ直下にプロジェクトを生成したいので、「.」を指定しています（ここはお好みで!）
 
+今回は TailwindCSS を使うためオプション`with-tailwindcss`をつけます
+ディレクトリ直下にプロジェクトを生成したいので、「.」を指定しています（ここはお好みで!）
 
 ```shell
 $ npm run dev
 ```
-下記画像のようにNext.jsのトップページが表示されればOKです！
+
+下記画像のように Next.js のトップページが表示されれば OK です！
 ![](https://i.gyazo.com/e1bfb646892ea04aa37090d1c454e185.png)
 
-本記事ではprettierを導入しています。導入したい方は以下のYAMLファイルを参考に設定してください！
+本記事では prettier を導入しています。導入したい方は以下の YAML ファイルを参考に設定してください！
+
 ```yml:.prettierrc.yml
 printWidth: 80
 tabWidth: 2
@@ -38,14 +42,17 @@ arrowParens: avoid
 endOfLine: lf
 ```
 
-# Next.jsで実装
-## Headerを作成する
+# Next.js で実装
+
+## Header を作成する
+
 ```shell
 $ mkdir components
 $ touch ./components/Header.tsx
 ```
+
 ```tsx:./components/Header.tsx
-import Link from 'next/link';
+import Link from 'next/link'
 
 export default function Header() {
   return (
@@ -61,10 +68,10 @@ export default function Header() {
         </nav>
       </div>
     </header>
-  );
+  )
 }
-
 ```
+
 ```diff tsx:./pages/_app.jsx
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
@@ -83,12 +90,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 export default MyApp;
 ```
 
-下記画像のようにヘッダーが表示されていればOKです！
+下記画像のようにヘッダーが表示されていれば OK です！
 ![](https://i.gyazo.com/fef51b3691c467f7b897b4eea9f52ff8.png)
 
 ## 記事一覧ページを作成する(サンプル)
-記事一覧ページにサンプルを一つ表示します。
-./pages/index.tsxを以下のように変更します。(もともと書いてあるコードは全て消してしまって問題ありません!)
+
+記事一覧ページにサンプルを一つ表示します
+./pages/index.tsx を以下のように変更します(もともと書いてあるコードは全て消してしまって問題ありません!)
+
 ```tsx:./pages/index.tsx
 export default function Home() {
   return (
@@ -116,5 +125,49 @@ export default function Home() {
 }
 ```
 
-トップページが以下の画像のように変わればOKです！
+トップページが以下の画像のように変われば OK です！
 ![](https://i.gyazo.com/4e2d381d19194c2dc69bba9b51934bed.png)
+
+## microCMS から記事を作成する
+
+### サービスの作成
+
+1. サービス名、サービス ID を入力して「次へ」押下
+   ※サービス ID は変更不可とのこと、後でサービス ID は必要となるのでメモをしておくと良いです
+   ![](https://storage.googleapis.com/zenn-user-upload/c8fbc8a8d5b7-20211223.png)
+
+2. サービス画像は今回用意しないので「スキップ」押下
+   ![](https://storage.googleapis.com/zenn-user-upload/79c9f25192bf-20211223.png)
+
+3. プランは「Hobby」を選択して「完了」押下
+   ![](https://storage.googleapis.com/zenn-user-upload/9c44ae03e1c0-20211223.png)
+
+### API の作成
+
+1. API 名、エンドポイントを入力して「次へ」押下
+   ![](https://storage.googleapis.com/zenn-user-upload/772286c638d5-20211223.png)
+
+2. 今回は記事を作成するので「リスト形式」を選択して「次へ」押下
+   ![](https://storage.googleapis.com/zenn-user-upload/f99261c6cbbb-20211223.png)
+
+3. API スキーマ（インターフェース）は下記 json ファイルをダウンロードしてファイルインポートする
+[api_schema_test.json](https://firestorage.jp/download/c9d18aa6f2dcd5f9d5cf46ed858d245ac49840b7)
+「こちら」押下
+![](https://i.gyazo.com/05b8aa71910cb3b8a2200e9dfe33e725.png)
+ダウンロードしたjsonファイルを選択して下記画像のように表示されることを確認します
+![](https://i.gyazo.com/72e55a3cb099726e40d36d9806d2e6e6.png)
+
+### コンテンツの作成
+1. 右上の「追加」押下してデータを作成する
+![](https://i.gyazo.com/ad1d8b954dc4963d4081ac1fe933c2d3.png)
+![](https://i.gyazo.com/d12cd7096326121826fa1ad893cbf9d5.png)
+
+2. 公開したら下記コマンドで公開された API が正しく動作しているか確認する
+  「API 設定」→「API リファレンス」→「試してみる」→「取得」
+![](https://i.gyazo.com/1db03c3aee60b19eee66badcdecaeba9.png)
+![](https://i.gyazo.com/d06d91db1c2ab4e10b683f45ebaa6912.png)
+![](https://i.gyazo.com/4193cedf8fd91276d7a01bdee65fa6bc.png)
+![](https://i.gyazo.com/4291c71527f3ae94e3e4da33705399a0.png)
+![](https://i.gyazo.com/68ef93bce349079c0916a172e266a9b0.png)
+
+HTTPレスポンスが200で返ってきていればOKです！
