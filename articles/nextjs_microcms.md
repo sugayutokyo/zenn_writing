@@ -6,20 +6,18 @@ topics: ['nextjs', 'typescript', 'tailwindcss', 'microcms']
 published: false
 ---
 
-
-
 # 環境構築
 
 ## next.js のプロジェクトを作成する
 
-```shell
+```sh
 $ npx create-next-app . -e with-tailwindcss
 ```
 
 今回は TailwindCSS を使うためオプション`with-tailwindcss`をつけます
 ディレクトリ直下にプロジェクトを生成したいので、「.」を指定しています（ここはお好みで!）
 
-```shell
+```sh
 $ npm run dev
 ```
 
@@ -46,7 +44,7 @@ endOfLine: lf
 
 ## Header を作成する
 
-```shell
+```sh
 $ mkdir components
 $ touch ./components/Header.tsx
 ```
@@ -72,7 +70,7 @@ export default function Header() {
 }
 ```
 
-```diff tsx:./pages/_app.jsx
+```diff tsx:./pages/_app.tsx
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 + import Header from '../components/Header';
@@ -121,7 +119,7 @@ export default function Home() {
         </div>
       </div>
     </>
-  );
+  )
 }
 ```
 
@@ -151,23 +149,306 @@ export default function Home() {
    ![](https://storage.googleapis.com/zenn-user-upload/f99261c6cbbb-20211223.png)
 
 3. API スキーマ（インターフェース）は下記 json ファイルをダウンロードしてファイルインポートする
-[api_schema_test.json](https://firestorage.jp/download/c9d18aa6f2dcd5f9d5cf46ed858d245ac49840b7)
-「こちら」押下
-![](https://i.gyazo.com/05b8aa71910cb3b8a2200e9dfe33e725.png)
-ダウンロードしたjsonファイルを選択して下記画像のように表示されることを確認します
-![](https://i.gyazo.com/72e55a3cb099726e40d36d9806d2e6e6.png)
+   [api_schema_test.json](https://firestorage.jp/download/c9d18aa6f2dcd5f9d5cf46ed858d245ac49840b7)
+   「こちら」押下
+   ![](https://i.gyazo.com/05b8aa71910cb3b8a2200e9dfe33e725.png)
+   ダウンロードした json ファイルを選択して下記画像のように表示されることを確認します
+   ![](https://i.gyazo.com/72e55a3cb099726e40d36d9806d2e6e6.png)
 
 ### コンテンツの作成
+
 1. 右上の「追加」押下してデータを作成する
-![](https://i.gyazo.com/ad1d8b954dc4963d4081ac1fe933c2d3.png)
-![](https://i.gyazo.com/d12cd7096326121826fa1ad893cbf9d5.png)
+   ![](https://i.gyazo.com/ad1d8b954dc4963d4081ac1fe933c2d3.png)
+   ![](https://i.gyazo.com/d12cd7096326121826fa1ad893cbf9d5.png)
 
 2. 公開したら下記コマンドで公開された API が正しく動作しているか確認する
-  「API 設定」→「API リファレンス」→「試してみる」→「取得」
-![](https://i.gyazo.com/1db03c3aee60b19eee66badcdecaeba9.png)
-![](https://i.gyazo.com/d06d91db1c2ab4e10b683f45ebaa6912.png)
-![](https://i.gyazo.com/4193cedf8fd91276d7a01bdee65fa6bc.png)
-![](https://i.gyazo.com/4291c71527f3ae94e3e4da33705399a0.png)
-![](https://i.gyazo.com/68ef93bce349079c0916a172e266a9b0.png)
+   「API 設定」→「API リファレンス」→「試してみる」→「取得」
+   ![](https://i.gyazo.com/1db03c3aee60b19eee66badcdecaeba9.png)
+   ![](https://i.gyazo.com/d06d91db1c2ab4e10b683f45ebaa6912.png)
+   ![](https://i.gyazo.com/4193cedf8fd91276d7a01bdee65fa6bc.png)
+   ![](https://i.gyazo.com/4291c71527f3ae94e3e4da33705399a0.png)
+   ![](https://i.gyazo.com/68ef93bce349079c0916a172e266a9b0.png)
 
-HTTPレスポンスが200で返ってきていればOKです！
+HTTP レスポンスが 200 で返ってきていれば OK です！
+
+### API を Next.js で実行する
+
+1. 環境変数を用意する
+
+```sh
+$ touch .env.local
+```
+
+microCMS のサイトに戻って「歯車」アイコン押下
+![](https://i.gyazo.com/f8a55aa889fc884d752563b4f52058d1.png)
+
+「API キー」押下して copy ボタンを押下
+![](https://i.gyazo.com/016ae84b0e136aa96e8dad8dc3efd07e.png)
+![](https://i.gyazo.com/f82611b0714694b0411e8a4baef82108.png)
+
+コピーした API_KEY をペーストする
+
+```:.env.local
+API_KEY="X-MICROCMS-API-KEYをペーストする"
+```
+
+2. microCMS の準備
+   microcms-js-sdk をインストールする
+
+```sh
+$ npm install --save microcms-js-sdk
+```
+
+libs/client.js を作成して初期化する
+
+```sh
+$ mkdir libs
+$ touch ./libs/client.ts
+```
+
+```ts:./libs/client.ts
+import { createClient } from 'microcms-js-sdk'
+export const client = createClient({
+  serviceDomain: 'サービスIDを入力する',
+  apiKey: process.env.API_KEY || '',
+})
+```
+
+:::message
+サービス ID を控えていない場合は下記画像のように microCMS の URL から取得することができます。
+:::
+![](https://i.gyazo.com/e94db593e75f191bb8a1105583ea609e.png)
+
+### 一覧ページを microCMS から取得する
+
+1. ./pages/index.js に getServerSideProps を実装して記事を取得する
+
+```diff tsx:./pages/index.tsx
++ import { client } from '../libs/client';
+
+export default function Home() {
+  return (
+    ...省略
+  );
+}
+
++ export const getServerSideProps = async () => {
++   const data = await client.get({ endpoint: 'articles' });
++
++   return {
++     props: {
++       articles: data.contents,
++     },
++   };
++ };
+```
+
+2. 取得した記事の情報をコンポーネントに渡す
+   まずは型情報を共通化するために型情報のファイルを作成します
+```sh
+mkdir ./types
+touch ./types/article.ts
+```
+```ts:./types/article.ts
+export type Article = {
+  id: string
+  createdAt: string
+  updatedAt: string
+  publishedAt: string
+  revisedAt: string
+  title: string
+  body: string
+  eye_catch: {
+    url: string
+    height: number
+    width: number
+  }
+  tag: string
+}
+```
+型情報をインポートして使います
+```diff tsx:./pages/index.tsx
+import { client } from '../libs/client';
++ import type { Article } from '../types/article';
+
+
++ type Props = {
++   articles: Array<Article>;
++ };
+
+- export default function Home() {
++ export default function Home({ articles }: Props) {
+  return (
+    ...省略
+  );
+}
+
+export const getServerSideProps = async () => {
+  ...省略
+};
+```
+
+3. 取得した記事を表示する
+
+```diff tsx:./pages/index.tsx
+
+...省略
+
+export default function Home({ articles }: Props) {
+  return (
+    <>
+      <h1 className="container mx-auto px-10 pt-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+        記事一覧
+      </h1>
+      <div className="container mx-auto p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
++       {articles.map(article => (
+          <div className="rounded overflow-hidden shadow-lg">
+            <img
+              className="w-full"
+-             src="https://i.gyazo.com/ad13e228541bbaf6952f447cce456dc2.jpg"
++             src={article.eye_catch.url}
+              alt="Sunset in the mountains"
+            />
+-           <div className="px-6 py-4">テストタイトル</div>
++           <div className="px-6 py-4">{article.title}</div>
+            <div className="px-6 pt-4 pb-2">
++           {article.tag && (
+              <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+-               # テストタグ
++               #{article.tag}
+              </span>
++           )}
+            </div>
+          </div>
++       ))}
+      </div>
+    </>
+  );
+}
+
+export const getServerSideProps = async () => {
+  ...省略
+};
+```
+
+下記のように取得したデータに基づいて記事一覧が表示されればOKです!
+![](https://i.gyazo.com/63325f715f98f88b5818b5fdc2005c23.png)
+
+## 詳細ページを作成する
+```sh
+$ mkdir ./pages/article
+$ touch ./pages/article/\[id\].jsx
+```
+```tsx:./pages/article/[id].jsx
+import { GetServerSideProps } from 'next';
+import type { Article } from '../../types/article';
+import { client } from '../../libs/client';
+
+type Props = {
+  article: Article;
+};
+
+export default function Article({ article }: Props) {
+  return (
+    <div className="bg-gray-50">
+      <div className="px-10 py-6 mx-auto">
+        <div className="max-w-6xl px-10 py-6 mx-auto bg-gray-50">
+          <img
+            className="object-cover w-full shadow-sm h-full"
+            src={article.eye_catch.url}
+          />
+          <div className="mt-2">
+            <div className="sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-blue-500">
+              {article.title}
+            </div>
+          </div>
+          {article.tag && (
+            <div className="flex items-center justify-start mt-4 mb-4">
+              <div className="px-2 py-1 font-bold bg-red-400 text-white rounded-lg">
+                #{article.tag}
+              </div>
+            </div>
+          )}
+          <div className="mt-2">
+            <div className="text-2xl text-gray-700 mt-4 rounded ">
+              {article.body}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const getServerSideProps: GetServerSideProps = async ctx => {
+  const id = ctx.params?.id;
+  const idExceptArray = id instanceof Array ? id[0] : id;
+  const data = await client.get({
+    endpoint: 'articles',
+    contentId: idExceptArray,
+  });
+
+  return {
+    props: {
+      article: data,
+    },
+  };
+};
+```
+
+### 一覧ページから詳細ページに遷移できるようにする
+```diff tsx:./pages/article/[id].tsx
+import { client } from '../libs/client';
+import type { Article } from '../types/article';
++ import Link from 'next/link';
+
+type Props = {
+  articles: Array<Article>;
+};
+
+export default function Home({ articles }: Props) {
+  return (
+    <>
+      <h1 className="container mx-auto px-10 pt-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+        記事一覧
+      </h1>
+      <div className="container mx-auto p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+        {articles.map(article => (
+          <div className="rounded overflow-hidden shadow-lg">
+            <img
+              className="w-full"
+              src={article.eye_catch.url}
+              alt="Sunset in the mountains"
+            />
+-           <div className="px-6 py-4">{article.title}</div>
++           <div className="px-6 py-4">
++             <Link href={`/article/${article.id}`} passHref>
++               <a>{article.title}</a>
++             </Link>
++           </div>
+            <div className="px-6 pt-4 pb-2">
+              ...省略
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+export const getServerSideProps = async () => {
+  ...省略
+};
+```
+
+## 参考
+
+この記事は以下のサイトを参考に作成されています。
+・TailwindCSS
+https://ordinarycoders.com/blog/article/17-tailwindcss-cards
+https://tailwindcomponents.com/component/a-single-blog-detail-page
+
+・microCMS
+https://blog.microcms.io/microcms-next-jamstack-blog/
+https://blog.microcms.io/what-is-headlesscms/
+https://codezine.jp/article/detail/15054
