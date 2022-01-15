@@ -65,7 +65,7 @@ export default function Header() {
 }
 
 ```
-```diff tsx:./pages/_app.js
+```diff tsx:./pages/_app.jsx
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 + import Header from '../components/Header';
