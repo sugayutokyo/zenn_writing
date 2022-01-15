@@ -13,14 +13,14 @@ published: false
 ```shell
 $ npx create-next-app . -e with-tailwindcss
 ```
-今回はTailwindCSSを使うためオプション`with-tailwindcss`をつける
-ディレクトリ直下にプロジェクトを生成したいので、「.」を指定している（ここはお好みで!）
+今回はTailwindCSSを使うためオプション`with-tailwindcss`をつけます
+ディレクトリ直下にプロジェクトを生成したいので、「.」を指定しています（ここはお好みで!）
 
 
 ```shell
 $ npm run dev
 ```
-下記画像のようにNext.jsのトップページが表示されればです！
+下記画像のようにNext.jsのトップページが表示されればOKです！
 ![](https://i.gyazo.com/e1bfb646892ea04aa37090d1c454e185.png)
 
 本記事ではprettierを導入しています。導入したい方は以下のYAMLファイルを参考に設定してください！
@@ -86,3 +86,35 @@ export default MyApp;
 下記画像のようにヘッダーが表示されていればOKです！
 ![](https://i.gyazo.com/fef51b3691c467f7b897b4eea9f52ff8.png)
 
+## 記事一覧ページを作成する(サンプル)
+記事一覧ページにサンプルを一つ表示します。
+./pages/index.tsxを以下のように変更します。(もともと書いてあるコードは全て消してしまって問題ありません!)
+```tsx:./pages/index.tsx
+export default function Home() {
+  return (
+    <>
+      <h1 className="container mx-auto px-10 pt-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+        記事一覧
+      </h1>
+      <div className="container mx-auto p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+        <div className="rounded overflow-hidden shadow-lg">
+          <img
+            className="w-full"
+            src="https://i.gyazo.com/ad13e228541bbaf6952f447cce456dc2.jpg"
+            alt="Sunset in the mountains"
+          />
+          <div className="px-6 py-4">テストタイトル</div>
+          <div className="px-6 pt-4 pb-2">
+            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+              # テストタグ
+            </span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+```
+
+トップページが以下の画像のように変わればOKです！
+![](https://i.gyazo.com/4e2d381d19194c2dc69bba9b51934bed.png)
