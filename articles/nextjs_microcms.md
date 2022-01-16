@@ -77,7 +77,6 @@ endOfLine: lf
 ```
 
 ## Next.js で実装
-
 ### Header を作成する
 
 ```sh
