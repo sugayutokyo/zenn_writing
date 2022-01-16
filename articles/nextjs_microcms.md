@@ -5,6 +5,41 @@ type: 'tech' # tech: 技術記事 / idea: アイデア
 topics: ['nextjs', 'typescript', 'tailwindcss', 'microcms']
 published: false
 ---
+## Next.jsとは
+React.jsを拡張してサーバー機能やファイルベースルーティングなどをできるようにしたものです。
+
+詳細は下記URLで確認してください！
+https://tech-parrot.com/programming/next-js-react-js-tigai/#3_URLNextjs
+
+## microCMSとは
+### そもそもCMSとは
+microCMSの説明をする前にCMSとはContents Management Systemの頭文字を撮ったもので、コンテンツを管理することができるシステムを指します。
+
+ざっくり説明すると「View」「コンテンツ管理画面」「DB」の機能を持ったシステムとなります。
+![](https://i.gyazo.com/4f994c1d0a99d666a3f3a7d5b419645e.png)
+* 「View」は記事の一覧ページなどを表示する機能。
+* 「コンテンツ管理画面」は記事を追加したり、お知らせを追加する機能。
+* 「DB」は記事などの情報を保持する機能。
+
+CMSにはいくつか種類がありますが、大まかにはViewの形によって分類することができます。
+### View固定型 
+この記事を書いているZennもCMSで種類としては「View固定型」となります。他にはQiitaやnoteなども「View固定型」に含まれます。
+Zennを例に説明すると記事をmarkdownで書いて公開すると執筆者はレイアウトのコードを書いていないのにいい感じに表示してくれます。
+レイアウトのことを考えずに済むことが「View固定型」の特徴となります。
+![](https://i.gyazo.com/8a19719ae6ebc1b5e52d1a83a8be21cb.png)
+
+
+
+### View自由型
+![](https://i.gyazo.com/651838d0e54561d3e3f4d56d7f0feedc.png)
+
+### microCMSは?
+![](https://i.gyazo.com/c0c946513f08e95312c12e10b1aff0a1.png)
+
+
+## この記事のリポジトリ
+https://github.com/sugayutokyo/nextjs_microcms_typescript
+うまく行かない処理などありましたら、こちらをご覧ください！
 
 # 環境構築
 
@@ -14,8 +49,8 @@ published: false
 $ npx create-next-app . -e with-tailwindcss
 ```
 
-今回は TailwindCSS を使うためオプション`with-tailwindcss`をつけます
-ディレクトリ直下にプロジェクトを生成したいので、「.」を指定しています（ここはお好みで!）
+* 今回は TailwindCSS を使うためオプション`with-tailwindcss`をつけます
+* ディレクトリ直下にプロジェクトを生成したいので、「.」を指定しています（ここはお好みで!）
 
 ```sh
 $ npm run dev
@@ -40,9 +75,9 @@ arrowParens: avoid
 endOfLine: lf
 ```
 
-# Next.js で実装
+## Next.js で実装
 
-## Header を作成する
+### Header を作成する
 
 ```sh
 $ mkdir components
@@ -127,7 +162,8 @@ export default function Home() {
 ![](https://i.gyazo.com/4e2d381d19194c2dc69bba9b51934bed.png)
 
 ## microCMS から記事を作成する
-
+microCMSのアカウントを下記URLから作成してください！
+https://microcms.io/
 ### サービスの作成
 
 1. サービス名、サービス ID を入力して「次へ」押下
@@ -302,7 +338,8 @@ export default function Home({ articles }: Props) {
       </h1>
       <div className="container mx-auto p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
 +       {articles.map(article => (
-          <div className="rounded overflow-hidden shadow-lg">
+-         <div className="rounded overflow-hidden shadow-lg">
++         <div className="rounded overflow-hidden shadow-lg" key={article.id}>
             <img
               className="w-full"
 -             src="https://i.gyazo.com/ad13e228541bbaf6952f447cce456dc2.jpg"
@@ -440,6 +477,11 @@ export const getServerSideProps = async () => {
   ...省略
 };
 ```
+
+下記画像のようにタイトルを押下して記事詳細ページに遷移できたら実装完了です！
+![](https://i.gyazo.com/e21f53bead2c240353a999bbab1557ec.gif)
+
+お疲れ様でした！！
 
 ## 参考
 
