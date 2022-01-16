@@ -489,11 +489,11 @@ export const getServerSideProps = async () => {
 ## 参考
 
 この記事は以下のサイトを参考に作成されています。
-・TailwindCSS
+* TailwindCSS
 https://ordinarycoders.com/blog/article/17-tailwindcss-cards
 https://tailwindcomponents.com/component/a-single-blog-detail-page
 
-・microCMS
+* microCMS
 https://blog.microcms.io/microcms-next-jamstack-blog/
 https://blog.microcms.io/what-is-headlesscms/
 https://codezine.jp/article/detail/15054
