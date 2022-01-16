@@ -3,7 +3,7 @@ title: 'Next.js(TypeScript)、TailwindCSS、microCMSでブログを作成しよ�
 emoji: '💻'
 type: 'tech' # tech: 技術記事 / idea: アイデア
 topics: ['nextjs', 'typescript', 'tailwindcss', 'microcms']
-published: false
+published: true
 ---
 ## Next.jsとは
 React.jsを拡張してサーバー機能やファイルベースルーティングなどが追加されたものです。
