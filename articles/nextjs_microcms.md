@@ -43,9 +43,9 @@ Viewがないとフロントエンドの選択が自由になります。(React.
 https://github.com/sugayutokyo/nextjs_microcms_typescript
 うまく行かない処理などありましたら、こちらをご覧ください！
 
-# 環境構築
+## 環境構築
 
-## next.js のプロジェクトを作成する
+### next.js のプロジェクトを作成する
 ```sh
 $ npx create-next-app . -e with-tailwindcss
 ```
@@ -127,7 +127,7 @@ export default MyApp;
 下記画像のようにヘッダーが表示されていれば OK です！
 ![](https://i.gyazo.com/fef51b3691c467f7b897b4eea9f52ff8.png)
 
-## 記事一覧ページを作成する(サンプル)
+### 記事一覧ページを作成する(サンプル)
 
 記事一覧ページにサンプルを一つ表示します
 ./pages/index.tsx を以下のように変更します(もともと書いてあるコードは全て消してしまって問題ありません!)
@@ -372,7 +372,7 @@ export const getServerSideProps = async () => {
 下記のように取得したデータに基づいて記事一覧が表示されればOKです!
 ![](https://i.gyazo.com/63325f715f98f88b5818b5fdc2005c23.png)
 
-## 詳細ページを作成する
+### 詳細ページを作成する
 ```sh
 $ mkdir ./pages/article
 $ touch ./pages/article/\[id\].jsx
