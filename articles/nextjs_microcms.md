@@ -46,7 +46,6 @@ https://github.com/sugayutokyo/nextjs_microcms_typescript
 # 環境構築
 
 ## next.js のプロジェクトを作成する
-
 ```sh
 $ npx create-next-app . -e with-tailwindcss
 ```
