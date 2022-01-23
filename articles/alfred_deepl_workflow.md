@@ -3,8 +3,11 @@ title: "DeepL+Alfred Workflowで翻訳を制する"
 emoji: "🤖"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ['nodejs', 'javascript']
-published: false
+published: true
 ---
+
+## こんな感じで表示してくれます！
+![](https://i.gyazo.com/48ee7ae23556a6292aecc86e52f57c21.gif)
 
 ## 対象者
 DeepLの翻訳をChrome以外でも使いたい方
