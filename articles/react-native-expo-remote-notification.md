@@ -61,6 +61,10 @@ Expoの通知サーバにリクエストを送る際にExpo Push Tokenが必要�
 ![](https://i.gyazo.com/c548c5d3f1472f76acab8bf696c1cacb.png =250x)
 
 ## Next.jsで通知を送信してみる
+### レポジトリ
+うまく行かない処理などありましたら、こちらをご覧ください！
+https://github.com/sugayutokyo/next_expo_remote_notification
+
 ### 環境構築(next.js のプロジェクトを作成する)
 ```sh
 $ npx create-next-app . -e with-tailwindcss
