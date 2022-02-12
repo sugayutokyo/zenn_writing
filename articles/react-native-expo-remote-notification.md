@@ -1,5 +1,5 @@
 ---
-title: "Next.jsからReact Native Expoにリモート通知を送信してみた"
+title: "React Native Expoにリモート通知を送信してみた"
 emoji: "🗂"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ['reactnative', 'nextjs']
