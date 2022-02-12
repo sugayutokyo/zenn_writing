@@ -62,11 +62,15 @@ Expoの通知サーバにリクエストを送る際にExpo Push Tokenが必要�
 
 ## Next.jsで通知を送信してみる
 ### 環境構築(next.js のプロジェクトを作成する)
+```sh
 $ npx create-next-app . -e with-tailwindcss
+```
 
 今回は TailwindCSS を使うためオプションwith-tailwindcssをつけます
 ディレクトリ直下にプロジェクトを生成したいので、「.」を指定しています（ここはお好みで!）
+```sh
 $ npm run dev
+```
 
 下記画像のように Next.js のトップページが表示されれば OK です！
 ![](https://i.gyazo.com/e850f31b903b3e2dc143d0929b4cf8d0.png)
