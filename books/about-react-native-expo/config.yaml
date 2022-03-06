@@ -1,9 +1,11 @@
-title: ""
+title: "React Native(Expo)徹底解剖"
 summary: ""
 topics: []
 published: false
 price: 0 # 有料の場合200〜5000
 # 本に含めるチャプターを順番に並べましょう
 chapters:
-  - example1
-  - example2
+  - 01_about_react_native
+  - 02_about_expo
+  - 03_about_eta_build
+  - 04_about_expo_ota_update
