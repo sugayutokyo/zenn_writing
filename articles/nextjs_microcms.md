@@ -374,7 +374,7 @@ export const getServerSideProps = async () => {
 ### 詳細ページを作成する
 ```sh
 $ mkdir ./pages/article
-$ touch ./pages/article/\[id\].jsx
+$ touch ./pages/article/\[id\].tsx
 ```
 下記コードを記述
 ```tsx:./pages/article/[id].jsx
@@ -435,7 +435,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 ```
 
 ### 一覧ページから詳細ページに遷移できるようにする
-```diff tsx:./pages/article/[id].tsx
+```diff tsx:./pages/index.tsx
 import { client } from '../libs/client';
 import type { Article } from '../types/article';
 + import Link from 'next/link';
