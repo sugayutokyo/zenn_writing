@@ -377,7 +377,7 @@ $ mkdir ./pages/article
 $ touch ./pages/article/\[id\].tsx
 ```
 下記コードを記述
-```tsx:./pages/article/[id].jsx
+```tsx:./pages/article/[id].tsx
 import { GetServerSideProps } from 'next';
 import type { Article } from '../../types/article';
 import { client } from '../../libs/client';
