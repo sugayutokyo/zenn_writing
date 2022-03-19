@@ -2,18 +2,20 @@
 title: "Next.jsでJSONファイルをFirestoreにinsertする"
 emoji: "✨"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ['nextjs', 'firestore', 'json']
+topics: ['nextjs', 'firestore', 'json', 'typescript']
 published: false
 ---
+
+## 今回やりたいこと
 
 ## 全体図
 
 
-## Firestoreにアクセスできるようにする
+## Firebaseにログインする
 下記リンクからお手持ちのGoogleアカウントでログインしてください。
 https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS79gIVTUNgCh2yzQ-GEAAYASAAEgLGJ_D_BwE&gclsrc=aw.ds
 
-### Firebaseプロジェクトを作成
+## Firebaseプロジェクトを作成
 作成済みの場合は飛ばしてしまって問題ありません！
 1. Firebaseプロジェクトを作成します
 ![](https://i.gyazo.com/92b8643cc00efb731ee6260fe8c01b8f.png)
@@ -47,7 +49,8 @@ https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS7
 ![](https://i.gyazo.com/6559c512fd7502c93c3882e37bd04a44.png)
 
 3. 「サービスアカウント」タブ押下→「サービスアカウントを作成」押下
-スクショ撮り忘れました。。。
+![](https://i.gyazo.com/6bc3a046d45477596e7b3a6433babc07.png)
+
 
 4. Node.jsが選択されていることを確認して、「新しい秘密鍵の生成」押下
 ![](https://i.gyazo.com/242b8660566e8c9e5e901826c2318311.png)
@@ -56,6 +59,8 @@ https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS7
 ![](https://i.gyazo.com/c0c79ced2d1fd9fc3e5e437b2e0d3003.png)
 
 6. jsonファイルがダウンロードされたら完了(後で使用するため保管してください)
+
+## collectionを作成する
 
 ## Next.jsの環境を作成
 ```sh
@@ -67,8 +72,81 @@ $ npm i
 
 ## ローカルサーバー起動
 $ npm run dev
-
 ```
+下記画像のように表示されれば完了
+![](https://i.gyazo.com/b22615b1318904c0df5829b17f5aa86c.png)
+
+本記事では prettier を導入しています。導入したい方は以下の YAML ファイルを参考に設定してください！
+
+```yml:.prettierrc.yml
+printWidth: 80
+tabWidth: 2
+semi: true
+singleQuote: true
+quoteProps: as-needed
+jsxSingleQuote: false
+trailingComma: all
+bracketSpacing: true
+jsxBracketSameLine: true
+arrowParens: avoid
+endOfLine: lf
+```
+
+## Firebase Admin SDKの秘密鍵をNext.jsに反映する
+1. 「Firebase Admin SDKの秘密鍵を作成する」で作成したjsonファイルをリネームする
+本記事では「firebase-test-serviceAccount.json」とリネームしています。
+※ リネームはしなくても大丈夫です！分かりやすくするためにリネームしています。
+![](https://i.gyazo.com/3970de1b92813fd110466c5ec442929a.png)
+
+2. .gitignoreに追加してgit上の管理から外す
+```sh:.gitignore
+firebase-test-serviceAccount.json
+```
+
+3. firebase-test-serviceAccount.jsonファイルをNext.jsのルートにコピーする
+gitignoreに追加しているためgitの管理から外れているはずです。
+![](https://i.gyazo.com/1f8a12c4fe832d64753e34ca92418629.png)
+
+
+## Firestoreの操作をするAPIを作成する
+1. Firebase Admin SDKをインストールする
+```sh
+$ npm i firebase-admin
+```
+1. apiのファイルを作成する
+```sh
+$ touch pages/api/user.ts
+```
+
+2. 
+```ts:pages/api/user.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+const { cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const serviceAccount = require('firebase-test-serviceAccount.json'); // 秘密鍵を取得
+const admin = require('firebase-admin');
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const COLLECTION_NAME = 'users';
+  //　初期化する
+  if (admin.apps.length === 0) {
+    admin.initializeApp({
+      credential: cert(serviceAccount),
+    });
+  }
+  const db = getFirestore();
+  res.status(200);
+}
+```
+
+
+
+
+## トップページにapiを実行するボタンを作成する
+
 
 ## Firestoreにデータをinsertできるようにする
 
