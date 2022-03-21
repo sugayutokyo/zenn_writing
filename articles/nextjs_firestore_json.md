@@ -1,8 +1,8 @@
 ---
-title: "Next.jsでJSONファイルをFirestoreにinsertする"
+title: "Next.jsでFirestoreのCRUD操作をやってみる"
 emoji: "✨"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ['nextjs', 'firestore', 'json', 'typescript']
+topics: ['nextjs', 'firestore', 'typescript']
 published: false
 ---
 
@@ -31,15 +31,6 @@ https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS7
 4. プロジェクトが作成し終わったら、「続行」押下
 ![](https://i.gyazo.com/bdd46cdb81b3af48de9a9b2abbb3b262.png)
 ![](https://i.gyazo.com/5da89f9551a19c0d29403d384158fc0c.png)
-
-<!-- ### ウェブアプリへの Firebase の追加の準備
-1. 画像の赤線のアイコン押下
-![](https://i.gyazo.com/a2da7b8f5133a77e6af43a78cf02fb82.png)
-
-2. アプリのニックネームを入力して、「アプリを登録」押下
-![](https://i.gyazo.com/2297133831e519eed8ebe40adae5766b.png)
-
-3. 「コンソールに進む」押下 -->
 
 ## Firebase Admin SDKの秘密鍵を作成する
 1. 画像の赤枠のアイコン（歯車）押下
@@ -146,23 +137,25 @@ firebase-test-serviceAccount.json
 gitignoreに追加しているためgitの管理から外れているはずです。
 ![](https://i.gyazo.com/1f8a12c4fe832d64753e34ca92418629.png)
 
-
-## Firestoreの操作をするAPIを作成する
-1. Firebase Admin SDKをインストールする
+## 実際にCRUD操作を行なってみる
+### 前準備
+1. Firebase Admin SDK、axiosをインストールする
 ```sh
 $ npm i firebase-admin
+$ npm i axios
 ```
-1. apiのファイルを作成する
+2. apiのファイルを作成する
 ```sh
 $ touch pages/api/user.ts
 ```
 
-2. dbを初期化する
+### insert
+1. firestoreにinsertするコードをuser.tsに記述
 ```ts:pages/api/user.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 const { cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
-const serviceAccount = require('firebase-test-serviceAccount.json'); // 秘密鍵を取得
+const serviceAccount = require('../../firebase-test-serviceAccount.json'); // 秘密鍵を取得
 const admin = require('firebase-admin');
 
 export default async function handler(
@@ -177,18 +170,46 @@ export default async function handler(
     });
   }
   const db = getFirestore();
+
+  if (req.method === 'POST') {
+    const docRef = db.collection(COLLECTION_NAME).doc();
+    const insertData = { datano: '1', name: 'Symfo', email: 'symfo@example.com' };
+    docRef.set(insertData);
+  }
   res.status(200);
 }
 ```
+2.  トップページにapiを実行するボタンを作成
+index.tsxを下記コードで全て書き換える
+```tsx:pages/index.tsx
+import type { NextPage } from 'next';
+import axios from 'axios';
 
-## トップページにapiを実行するボタンを作成する
+const Home: NextPage = () => {
+  const insertUser = async () => {
+    await axios.post('/api/user');
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      <button
+        className="mt-4 w-60 rounded-full bg-green-500 py-2 px-4 font-bold text-white hover:bg-green-700"
+        onClick={() => insertUser()}>
+        Insert User
+      </button>
+    </div>
+  );
+};
+
+export default Home;
+```
+
+3. トップ画面の「Insert User」押下でfirestoreにデータができていれば完了
+![](https://i.gyazo.com/0a9b6e889c499cdb7c2830858b0e16b6.png)
+
+### update
 
 
-## Firestoreにデータをinsertできるようにする
-
-## jsonを選択できるようにする
-
-## 選択したjsonの内容をFirestoreにinsertする
 
 ## 参考
 Firestore
