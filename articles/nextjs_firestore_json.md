@@ -219,7 +219,7 @@ export default Home;
 
 
 2. データをupdateするコードをuser.tsに記述(1.で控えたdocument idをtargetDocに設定する)
-```diff tsx:pages/api/user.ts
+```diff ts:pages/api/user.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 const { cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -238,7 +238,7 @@ export default async function handler(
     });
   }
   const db = getFirestore();
-
++ const targetDoc = 'uxngvlaMwDc0Ye2WnQhN'; //書き換える
   if (req.method === 'POST') {
     const docRef = db.collection(COLLECTION_NAME).doc();
     const insertData = {
@@ -249,7 +249,6 @@ export default async function handler(
     docRef.set(insertData);
 - }
 + } else if (req.method === 'PATCH') {
-+   const targetDoc = 'uxngvlaMwDc0Ye2WnQhN'; //書き換える
 +   const docRef = db.collection(COLLECTION_NAME).doc(targetDoc);
 +   const updateData = {
 +     datano: '1',
@@ -263,7 +262,7 @@ export default async function handler(
 
 ```
 
-3. トップページにupdateを実行するボタン　を作成
+3. トップページにupdateを実行するボタンを作成
 ```diff tsx:pages/index.tsx
 import type { NextPage } from 'next';
 import axios from 'axios';
@@ -299,6 +298,125 @@ export default Home;
 ![](https://i.gyazo.com/79283a7cc6969e9782b919e576a90d58.png)
 ![](https://i.gyazo.com/744d1d6d29e18a189fc523f5428ed7e4.png)
 
+### get
+1. データをupdateするコードをuser.tsに記述
+```diff ts:pages/api/user.ts
+...
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const COLLECTION_NAME = 'users';
+  //　初期化する
+  if (admin.apps.length === 0) {
+    admin.initializeApp({
+      credential: cert(serviceAccount),
+    });
+  }
+  const db = getFirestore();
+
+  const targetDoc = 'uxngvlaMwDc0Ye2WnQhN'; //書き換える
+  if (req.method === 'POST') {
+    ...
+  } else if (req.method === 'PATCH') {
+    const docRef = db.collection(COLLECTION_NAME).doc(targetDoc);
+    const updateData = {
+      datano: '1',
+      name: 'updateSynfo',
+      email: 'updateSynfo@example.com',
+    };
+    docRef.set(updateData);
+- }
++ } else if (req.method === 'GET') {
++   const doc = await db.collection(COLLECTION_NAME).doc(targetDoc).get();
++   console.log(doc);
++ }
+  res.status(200);
+}
+```
+
+2. トップページにgetを実行するボタンを作成
+```diff tsx:pages/index.tsx
+import type { NextPage } from 'next';
+import axios from 'axios';
+
+const Home: NextPage = () => {
+  const insertUser = async () => {
+    await axios.post('/api/user');
+  };
+  const updateUser = async () => {
+    await axios.patch('/api/user');
+  };
++ const getUser = async () => {
++   await axios.get('/api/user');
++ };
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      <button
+        className="mt-4 w-60 rounded-full bg-green-500 py-2 px-4 font-bold text-white hover:bg-green-700"
+        onClick={() => insertUser()}>
+        Insert User
+      </button>
+      <button
+        className="mt-4 w-60 rounded-full bg-yellow-500 py-2 px-4 font-bold text-white hover:bg-yellow-700"
+        onClick={() => updateUser()}>
+        Update User
+      </button>
++    <button
++      className="mt-4 w-60 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
++      onClick={() => getUser()}>
++      Get User
++    </button>
+    </div>
+  );
+};
+
+export default Home;
+```
+
+3. トップ画面の「Get User」押下でfirestoreのデータがターミナルに表示されていれば完了
+![](https://i.gyazo.com/540d4842f2f98427b00c0820ac8fcb00.png)
+下記のように_fieldsProtoにfirestoreに格納されている内容が表示されていればOK
+```sh
+QueryDocumentSnapshot {
+  _fieldsProto: {
+    name: { stringValue: 'updateSynfo', valueType: 'stringValue' },
+    email: {
+      stringValue: 'updateSynfo@example.com',
+      valueType: 'stringValue'
+    },
+    datano: { stringValue: '1', valueType: 'stringValue' }
+  },
+  _ref: DocumentReference {
+    _firestore: Firestore {
+      _settings: [Object],
+      _settingsFrozen: true,
+      _serializer: [Serializer],
+      _projectId: 'next-js-firestore-json',
+      registeredListenersCount: 0,
+      bulkWritersCount: 0,
+      _backoffSettings: [Object],
+      _clientPool: [ClientPool]
+    },
+    _path: ResourcePath { segments: [Array] },
+    _converter: {
+      toFirestore: [Function: toFirestore],
+      fromFirestore: [Function: fromFirestore]
+    }
+  },
+  _serializer: Serializer {
+    createReference: [Function (anonymous)],
+    createInteger: [Function (anonymous)],
+    allowUndefined: false
+  },
+  _readTime: Timestamp { _seconds: 1647837063, _nanoseconds: 504465000 },
+  _createTime: Timestamp { _seconds: 1647831093, _nanoseconds: 420866000 },
+  _updateTime: Timestamp { _seconds: 1647836054, _nanoseconds: 546874000 }
+}
+```
+
+### delete
 
 ## 参考
 Firestore
