@@ -3,7 +3,7 @@ title: "Next.jsでFirestoreのCRUD操作をやってみる"
 emoji: "✨"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ['nextjs', 'firestore', 'typescript']
-published: false
+published: true
 ---
 
 ## 本記事でやりたいこと
