@@ -13,11 +13,12 @@ Next.jsでFirestoreのCRUD操作をする
 https://github.com/sugayutokyo/nextjs-firestore-json
 うまく行かない処理などありましたら、こちらをご覧ください！
 
-## Firebaseにログインする
+## Firebaseの設定
+### Firebaseにログインする
 下記リンクからお手持ちのGoogleアカウントでログインしてください。
 https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS79gIVTUNgCh2yzQ-GEAAYASAAEgLGJ_D_BwE&gclsrc=aw.ds
 
-## Firebaseプロジェクトを作成
+### Firebaseプロジェクトを作成
 作成済みの場合は飛ばしてしまって問題ありません！
 1. Firebaseプロジェクトを作成します
 ![](https://i.gyazo.com/92b8643cc00efb731ee6260fe8c01b8f.png)
@@ -34,7 +35,7 @@ https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS7
 ![](https://i.gyazo.com/bdd46cdb81b3af48de9a9b2abbb3b262.png)
 ![](https://i.gyazo.com/5da89f9551a19c0d29403d384158fc0c.png)
 
-## Firebase Admin SDKの秘密鍵を作成する
+### Firebase Admin SDKの秘密鍵を作成する
 1. 画像の赤枠のアイコン（歯車）押下
 ![](https://i.gyazo.com/3b14c5008177d0556d568b6137de6f30.png)
 
@@ -53,7 +54,8 @@ https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS7
 
 6. jsonファイルがダウンロードされたら完了(後で使用するため保管してください)
 
-## データベースを作成
+## Firestoreの設定
+### データベースを作成
 1. 構築→「Firestore Database」押下
 ![](https://i.gyazo.com/84981ecf5da3f36925e88302ce5ceb6a.png)
 
@@ -94,7 +96,7 @@ https://firebase.google.com/docs/firestore/locations?hl=ja
 5. 下記画像のようにコレクションが作成されれば完了
 ![](https://i.gyazo.com/9e926a49ba82e3a7f0bf432660497eb2.png)
 
-## Next.jsの環境を作成
+## Next.jsの環境構築
 ```sh
 ## Next.jsのプロジェクトを作成
 $ npx create-next-app . -e with-tailwindcss
