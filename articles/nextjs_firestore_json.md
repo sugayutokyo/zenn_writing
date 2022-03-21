@@ -60,7 +60,46 @@ https://firebase.google.com/products/firestore/?hl=ja&gclid=EAIaIQobChMIgdOrncS7
 
 6. jsonファイルがダウンロードされたら完了(後で使用するため保管してください)
 
-## collectionを作成する
+## データベースを作成
+1. 構築→「Firestore Database」押下
+![](https://i.gyazo.com/84981ecf5da3f36925e88302ce5ceb6a.png)
+
+2. 「データベースの作成」押下
+![](https://i.gyazo.com/569ab6f2325d0e7856b933e16c2b1a50.png)
+
+3. 「本番環境モード」が選択されていることを確認して、「次へ」押下
+![](https://i.gyazo.com/afebdf1477a543484a5e9a04d20ea761.png)
+
+4. 「Cloud Firestoreのロケーション」で「asia-northeast1」を選択して「有効にする」押下
+![](https://i.gyazo.com/3c484054e5806be5ba5d0f620efc07de.png)
+
+ロケーションに関して他のものを選択したい場合は下記を参考にしてください
+https://firebase.google.com/docs/firestore/locations?hl=ja
+
+5. 下記画像のように表示されれば完了
+![](https://i.gyazo.com/736808674889dcdb8a11a156e258d6fe.png)
+
+:::message
+下記画像のようにコレクションを読み込めない場合は「再読み込み」を押下してください
+![](https://i.gyazo.com/959dc76baa52e2518f3245e996c0c628.png)
+:::
+
+### コレクションを作成
+まだコレクションが存在しないため作成します。
+1. 「コレクションを開始」押下
+![](https://i.gyazo.com/5ab7df535f7e3be109f9cb17c58b8634.png)
+
+2. 「コレクションID」にusersと入力し「次へ」押下
+![](https://i.gyazo.com/3c060002f552b8ff7961826a08ad9420.png)
+
+3. 「自動ID」押下でドキュメントIDを自動で割り当てる
+![](https://i.gyazo.com/1be4dcbb7e9980c52076edb0a78965a2.png)
+
+4. 「保存」押下
+![](https://i.gyazo.com/90d4ca7eb3f5f83df324d4da9ab415c5.png)
+
+5. 下記画像のようにコレクションが作成されれば完了
+![](https://i.gyazo.com/9e926a49ba82e3a7f0bf432660497eb2.png)
 
 ## Next.jsの環境を作成
 ```sh
@@ -118,7 +157,7 @@ $ npm i firebase-admin
 $ touch pages/api/user.ts
 ```
 
-2. 
+2. dbを初期化する
 ```ts:pages/api/user.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 const { cert } = require('firebase-admin/app');
@@ -141,9 +180,6 @@ export default async function handler(
   res.status(200);
 }
 ```
-
-
-
 
 ## トップページにapiを実行するボタンを作成する
 
