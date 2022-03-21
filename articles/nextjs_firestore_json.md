@@ -6,10 +6,12 @@ topics: ['nextjs', 'firestore', 'typescript']
 published: false
 ---
 
-## 今回やりたいこと
+## 本記事でやりたいこと
+Next.jsでFirestoreのCRUD操作をする
 
-## 本記事のレポジトリ
-
+## 本記事のリポジトリ
+https://github.com/sugayutokyo/nextjs-firestore-json
+うまく行かない処理などありましたら、こちらをご覧ください！
 
 ## Firebaseにログインする
 下記リンクからお手持ちのGoogleアカウントでログインしてください。
@@ -495,4 +497,10 @@ export default Home;
 お疲れ様でした！
 
 ## 参考
-Firestore
+* Firebase
+https://zenn.dev/nash/articles/131441b8999209
+https://zenn.dev/nash/articles/6e18bd94eca63e
+https://off.tokyo/blog/next-js-node-firebase-firestore/
+
+* Next.js
+https://nishimura.club/rest-api-implementation-with-nextjs-api-routes
