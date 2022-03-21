@@ -126,7 +126,7 @@ arrowParens: avoid
 endOfLine: lf
 ```
 
-## Firebase Admin SDKの秘密鍵をNext.jsに反映する
+### Firebase Admin SDKの秘密鍵をNext.jsに反映する
 1. 「Firebase Admin SDKの秘密鍵を作成する」で作成したjsonファイルをリネームする
 本記事では「firebase-test-serviceAccount.json」とリネームしています。
 ※ リネームはしなくても大丈夫です！分かりやすくするためにリネームしています。
