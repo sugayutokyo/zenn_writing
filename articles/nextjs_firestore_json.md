@@ -150,7 +150,7 @@ $ touch pages/api/user.ts
 ```
 
 ### insert
-1. firestoreにinsertするコードをuser.tsに記述
+1. firestoreにデータをinsertするコードをuser.tsに記述
 ```ts:pages/api/user.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 const { cert } = require('firebase-admin/app');
@@ -173,13 +173,17 @@ export default async function handler(
 
   if (req.method === 'POST') {
     const docRef = db.collection(COLLECTION_NAME).doc();
-    const insertData = { datano: '1', name: 'Symfo', email: 'symfo@example.com' };
+    const insertData = {
+      datano: '1',
+      name: 'Symfo',
+      email: 'symfo@example.com',
+    };
     docRef.set(insertData);
   }
   res.status(200);
 }
 ```
-2.  トップページにapiを実行するボタンを作成
+2.  トップページにinsertを実行するボタンを作成
 index.tsxを下記コードで全て書き換える
 ```tsx:pages/index.tsx
 import type { NextPage } from 'next';
@@ -188,7 +192,7 @@ import axios from 'axios';
 const Home: NextPage = () => {
   const insertUser = async () => {
     await axios.post('/api/user');
-  }
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -205,10 +209,95 @@ export default Home;
 ```
 
 3. トップ画面の「Insert User」押下でfirestoreにデータができていれば完了
+![](https://i.gyazo.com/ab39337705e212394de7cbdb91700f48.png)
+
 ![](https://i.gyazo.com/0a9b6e889c499cdb7c2830858b0e16b6.png)
 
 ### update
+1. 更新対象のdocument idを控える（赤枠内の文字列）
+![](https://i.gyazo.com/dae8126d7caf0362d146d6eed79a2291.png)
 
+
+2. データをupdateするコードをuser.tsに記述(1.で控えたdocument idをtargetDocに設定する)
+```diff tsx:pages/api/user.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+const { cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const serviceAccount = require('../../firebase-test-serviceAccount.json'); // 秘密鍵を取得
+const admin = require('firebase-admin');
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const COLLECTION_NAME = 'users';
+  //　初期化する
+  if (admin.apps.length === 0) {
+    admin.initializeApp({
+      credential: cert(serviceAccount),
+    });
+  }
+  const db = getFirestore();
+
+  if (req.method === 'POST') {
+    const docRef = db.collection(COLLECTION_NAME).doc();
+    const insertData = {
+      datano: '1',
+      name: 'Symfo',
+      email: 'symfo@example.com',
+    };
+    docRef.set(insertData);
+- }
++ } else if (req.method === 'PATCH') {
++   const targetDoc = 'uxngvlaMwDc0Ye2WnQhN'; //書き換える
++   const docRef = db.collection(COLLECTION_NAME).doc(targetDoc);
++   const updateData = {
++     datano: '1',
++     name: 'updateSynfo',
++     email: 'updateSynfo@example.com',
++   };
++   docRef.set(updateData);
++ }
+  res.status(200);
+}
+
+```
+
+3. トップページにupdateを実行するボタン　を作成
+```diff tsx:pages/index.tsx
+import type { NextPage } from 'next';
+import axios from 'axios';
+
+const Home: NextPage = () => {
+  const insertUser = async () => {
+    await axios.post('/api/user');
+  };
++ const updateUser = async () => {
++   await axios.patch('/api/user');
++ };
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      <button
+        className="mt-4 w-60 rounded-full bg-green-500 py-2 px-4 font-bold text-white hover:bg-green-700"
+        onClick={() => insertUser()}>
+        Insert User
+      </button>
++    <button
++      className="mt-4 w-60 rounded-full bg-yellow-500 py-2 px-4 font-bold text-white hover:bg-yellow-700"
++      onClick={() => updateUser()}>
++      Update User
++    </button>
+    </div>
+  );
+};
+
+export default Home;
+```
+
+4. トップ画面の「Update User」押下でfirestoreのデータが更新されていれば完了
+![](https://i.gyazo.com/79283a7cc6969e9782b919e576a90d58.png)
+![](https://i.gyazo.com/744d1d6d29e18a189fc523f5428ed7e4.png)
 
 
 ## 参考
