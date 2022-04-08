@@ -11,5 +11,22 @@ published: false
 
 
 ## Next.jsの環境構築(Tailwind CSSも同時に)
+```sh
+$ npx create-next-app . -e with-tailwindcss
+```
 
-## 
+## Mintineの導入
+下記公式サイトを参考にしながら導入します。
+https://mantine.dev/theming/next/
+
+1.  ライブラリをインストール
+```sh
+npm install @mantine/next
+```
+
+2. 
+
+
+## この記事のリポジトリ
+https://github.com/sugayutokyo/sample_nextjs_mantine
+うまく行かない処理などありましたら、こちらをご覧ください！
