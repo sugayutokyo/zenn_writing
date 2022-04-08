@@ -36,16 +36,16 @@ https://support.deepl.com/hc/ja/articles/360020685720-DeepL-API-%E6%96%87%E5%AD%
 :::
 
 ## Macの設定でコンピュータの制御を許可する
+選択している文字列を取得などのコンピュータの制御を許可する必要があります。もしすでに許可しているのであれば不要です。
+:::details コンピュータの制御を許可する
 1. 左上の「アップルマーク」→「システム環境設定...」押下
 ![](https://i.gyazo.com/4f3649f20e9ff931dc2faaa3804d02ac.png)
-
 2. 「セキュリティとプライバシー」押下
 ![](https://i.gyazo.com/e62b2fcb99e39f27ee7dee6a1c67b6d4.png)
-
 3. 「アクセシビリティ」の「Alfred 4」のチェックをつけて完了
 ※ チェックをつけるには左下の「変更するにはカギをクリックします。」を押下する必要があります。
 ![](https://i.gyazo.com/739138dd45eb70433808728ac281201a.png)
-
+:::
 
 ## DeepL APIのACCESS TOKENを取得する
 DeepL API Freeのアカウントを作成していない場合は下記を参考に作成してください！
