@@ -1,5 +1,5 @@
 ---
-title: "Next.js、Mantine、Tailwind CSSを一緒に使ってみたらボタンが表示されなかった話"
+title: "Next.js、Mantine、Tailwind CSSを一緒に使ってみたらボタンが表示されない問題を解決"
 emoji: "🐬"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["nextjs", "tailwindcss", "mantine", "typescript"]
