@@ -16,7 +16,7 @@ MUIなどと並ぶReact専用のUIライブラリです。他のライブラリ�
 $ npx create-next-app . -e with-tailwindcss
 ```
 
-# Mintineの導入
+# Mantineの導入
 下記公式サイトを参考にしながら導入します。
 https://mantine.dev/theming/next/
 
