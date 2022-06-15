@@ -48,8 +48,9 @@ $ npm run dev
 ```
 
 # Truffleの環境構築
-## Truffleとは
-Solidityの開発用フレー厶ワーク。スマートコントラクトのビルド(コンパイル)、テスト、デプロイをサポート
+## Truffle(トリュフ)とは
+* Solidityの開発用フレー厶ワーク
+* スマートコントラクトのビルド(コンパイル)、テスト、デプロイをサポート
 
 ## Truffleの導入
 ```sh
@@ -75,7 +76,7 @@ $ truffle init
 ![](https://i.gyazo.com/d0d7aeb0484e9d990729073050da3e81.png)
 
 # Ganacheによるローカル環境の構築
-## Ganacheとは
+## Ganache(ガナッシュ)とは
 TruffleチームがローンチしたEthereum開発環境。ローカルで開発用のチェーンを構築できて、GUIでブロックやトランザクションを参照することができる
 ## Ganacheのダウンロード
 https://trufflesuite.com/ganache/
@@ -306,13 +307,245 @@ ETHからガス代分減っている。今回のdeployにおけるガス代は`t
 トランザクションの履歴が確認できる
 ![](https://i.gyazo.com/357a9d2944ed41e50d5c05e1666e4062.png)
 * コントラクト
-
+ZennCoinのスマートコントラクトがデプロイされていることが確認できる
 ![](https://i.gyazo.com/ffb9d8a786427d3a1f760188f873edfb.png)
 
 # Next.jsで実際にスマートコントラクトを使ってみる
+## スマートコントラクトをNext.jsで使用する流れ
+![](https://i.gyazo.com/fcbc29d27bcc692396466e506a147474.png)
+
+Application Binary Interface(ABI)はコントラクトに接続するインターフェースです。Solidityファイルをbuildして作成されるJSONファイル内にABIが存在し、ABIを経由してコントラクトを操作することができます。本記事ではNext.jsからABIを経由してコントラクトを操作します。
+## 準備
+### web3.jsをインストール
+```
+$ npm i web3
+```
+
+### TypeChainを使って型ファイルの生成
+ABIはSolidityファイルをbuildして作成されるJSONファイルに存在するため、Solidityファイルを変更するたびに型情報が変更になる可能性があります。ABIの型情報はJSONファイルのABIから生成してあげる必要があり、typechainというライブラリによって実現できます。
+1. ABIの型生成のために下記ライブラリをインストール
+```
+$ npm install -D typechain @typechain/web3-v1
+$ npm install web3-utils
+```
+
+2. typechainを実行するためにscriptsに下記内容を追加
+```diff js:package.json
+{
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+-    "start": "next start"
++    "start": "next start",
++    "typechain": "typechain --target web3-v1 --out-dir types/abi './build/contracts/**/*.json'"
+  },
+...
+```
+
+3. typechainを実行し、下記画像のようにtypes/abi配下にtypeのファイルが作成されることを確認
+```sh
+$ npm run typechain
+```
+![](https://i.gyazo.com/be0b2f6d5e1a1f81ce137503f76332eb.png)
+
+4. index.jsを下記コードに書き換えて実際に型付けがうまくいくかどうか確認
+```js:papes/index.tsx
+import type { NextPage } from 'next';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import ZCContract from '../build/contracts/ZennCoin.json';
+import { ZennCoin } from '../types/abi/ZennCoin';
+
+// プロバイダの設定
+const web3 = new Web3(new Web3.providers.HttpProvider(`http://127.0.0.1:7545`));
+
+// コントラクトのアドレス
+const address = '0x8F4D574EFe77e00af32C54d2A0D07F7C53cb56bF';
+
+const ABI = ZCContract.abi as any as AbiItem;
+// コントラクトのインスタンス
+const contract = new web3.eth.Contract(ABI, address) as unknown as ZennCoin;
+
+const Home: NextPage = () => {
+  return <div></div>;
+};
+
+export default Home;
+```
+コードについて解説
+* 以下のコードはhttp://127.0.0.1:7545を指定することでGanacheの開発用チェーンを指定しています。テストネットやメインネットを使用したい時にはhttp://127.0.0.1:7545の部分をそれぞれ変更すればOK
+```ts
+const web3 = new Web3(new Web3.providers.HttpProvider(`http://127.0.0.1:7545`));
+```
+
+* コントラクトのアドレスは以下コードで指定している
+```ts
+const address = '0x8F4D574EFe77e00af32C54d2A0D07F7C53cb56bF';
+```
+コントラクトのアドレスはGanacheのCONTRACTSタブのZennCoinのADDRESSをコピーする
+![](https://i.gyazo.com/238d5bb9e133983009aa978ee0ac6066.png)
+
+
+* 以下コードでコントラクトのインスタンスを生成している。コントラクトに関する操作はこのインスタンスを通して行う
+```ts
+const contract = new web3.eth.Contract(ABI, address) as unknown as ZennCoin;
+```
+
+5. 下記のようにcontractで使用できるメソッドが予測候補に出てきたら成功
+![](https://i.gyazo.com/83cdc2d56a848794f7e4dd772804ccb0.gif)
+
+## Next.jsからABIを経由してコントラクトを操作
+### まずはアカウント情報を取得してみる
+1. pages/index.tsxを下記のように修正
+```diff tsx:pages/index.tsx
+...
+const Home: NextPage = () => {
++  (async () => {
++    const accountsWeb3 = await web3.eth.getAccounts();
++    console.log(accountsWeb3);
++  })();
+  return <div></div>;
+};
+...
+```
+
+2. chromeでlocalhostにアクセスして下記のようにコンソールにアカウントのADDRESSが表示されることが確認できればOK
+![](https://i.gyazo.com/990da0844ac232e06a907264e13a4a4c.png)
+表示されているADDRESSがGanacheのものと同じであることを確認する
+![](https://i.gyazo.com/c00ddf2f2b92826b9e67e0d55004a658.png)
+
+### ETHとZennCoinの残高を取得する
+1. pages/index.tsxを下記のように修正
+今回は2つのアカウント内でZennCoinを移動させるため、2つのアカウント(UserAとUserB)のETHとZennCoinの残高を取得します。
+本記事ではWeb3技術の共有を主としているため、Reactについてのコードの解説は行いません。
+```diff tsx:pages/index.tsx
+import type { NextPage } from 'next';
++ import { useState } from 'react';
+import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import ZCContract from '../build/contracts/ZennCoin.json';
+import { ZennCoin } from '../types/abi/ZennCoin';
+
+// プロバイダの設定
+const web3 = new Web3(new Web3.providers.HttpProvider(`http://127.0.0.1:7545`));
+
+// コントラクトのアドレス
+const address = '0x8F4D574EFe77e00af32C54d2A0D07F7C53cb56bF';
+
+const ABI = ZCContract.abi as any as AbiItem;
+// コントラクトのインスタンス
+const contract = new web3.eth.Contract(ABI, address) as unknown as ZennCoin;
+
++ const walletAddressUserA = '0x7D4d7a0da0e8e1Dc90a86fDB82882a94190d89D6';
++ const walletAddressUserB = '0x95a1D1A9fA7280E8A98c288a7bFD69EFdEFcD390';
+
+const Home: NextPage = () => {
+-  (async () => {
+-    const accountsWeb3 = await web3.eth.getAccounts();
+-    console.log(accountsWeb3);
+-  })();
+-  return <div></div>;
++  const [balanceZcUserA, setBalanceZcUserA] = useState(''); // ZennCoin残高 UserA
++  const [balanceEthUserA, setBalanceEthUserA] = useState(''); // ETH残高 UserA
++  const [balanceZcUserB, setBalanceZcUserB] = useState(''); // ZennCoin残高 UserB
++  const [balanceEthUserB, setBalanceEthUserB] = useState(''); // ETH残高 UserB
++  const getBalance = async (userType: string) => {
++    if (userType === 'a') {
++      setBalanceZcUserA(await contract.methods.balanceOf(walletAddressUserA).call());
++      setBalanceEthUserA(await web3.eth.getBalance(walletAddressUserA));
++    } else if (userType === 'b') {
++      setBalanceZcUserB(await contract.methods.balanceOf(walletAddressUserB).call());
++      setBalanceEthUserB(await web3.eth.getBalance(walletAddressUserB));
++    }
++  };
++  
++  return (
++    <div className="m-5">
++      <h2>UserA Info</h2>
++      {balanceZcUserA ? (
++        <table className="table-auto">
++          <thead>
++            <tr>
++              <th className="px-4 py-2">ZennCoin Balance</th>
++              <th className="px-4 py-2">ETH Balance</th>
++            </tr>
++          </thead>
++          <tbody>
++            <tr>
++              <td className="border px-4 py-2">{balanceZcUserA}</td>
++              <td className="border px-4 py-2">{balanceEthUserA}</td>
++            </tr>
++          </tbody>
++        </table>
++      ) : (
++        <div>「UserA 残高を取得」を押してください</div>
++      )}
++      <h2>UserB Info</h2>
++      {balanceZcUserA ? (
++        <table className="table-auto">
++          <thead>
++            <tr>
++              <th className="px-4 py-2">ZennCoin Balance</th>
++              <th className="px-4 py-2">ETH Balance</th>
++            </tr>
++          </thead>
++          <tbody>
++            <tr>
++              <td className="border px-4 py-2">{balanceZcUserB}</td>
++              <td className="border px-4 py-2">{balanceEthUserB}</td>
++            </tr>
++          </tbody>
++        </table>
++      ) : (
++        <div>「UserB 残高を取得」を押してください</div>
++      )}
++      <button
++        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
++        onClick={() => getBalance('a')}>
++        UserA 残高を取得
++      </button>
++      <button
++        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-5"
++        onClick={() => getBalance('b')}>
++        UserB 残高を取得
++      </button>
++    </div>
+  );
+};
+
+export default Home;
+
+```
+
+* 下記コードでwalletAddressを2つ指定している(GanacheのACCOUNTSタブの中のINDEX 0とINDEX 1のものを本記事では使用)
+```ts
+const walletAddressUserA = '0x7D4d7a0da0e8e1Dc90a86fDB82882a94190d89D6';
+const walletAddressUserB = '0x95a1D1A9fA7280E8A98c288a7bFD69EFdEFcD390';
+```
+![](https://i.gyazo.com/96280cff464bd0daee1bac1990e4cf33.png)
+
+* contractインスタンスから指定したAddressのZennCoinの残高を取得する
+```ts
+contract.methods.balanceOf(walletAddressUserA).call()
+```
+
+* web3インスタンスから指定したAddressのETHの残高を取得する
+```ts
+web3.eth.getBalance(walletAddressUserA)
+```
+2. 動作確認する
+「UserA 残高を取得」、「UserB 残高を取得」を謳歌することで下記GIFのように残高を取得することができたらOK
+![](https://i.gyazo.com/16eb5a9cfbdb2aac99c37a116a1f7554.gif)
+※2回デプロイしたのでETHの残高が少なくなっています。分かりづらくて申し訳ありません。
+本記事を順番に進めているのであれば99978~と表示されるはずです！
+
 
 # 最後に
-私が所属している株式会社UPBONDではWeb3技術を使った開発を行なっています。今後もWeb3技術で開発していく中で記事にしていきます。
+私が所属している株式会社UPBONDではWeb3技術を使った開発を行っています。今後もWeb3技術で開発していく中で手に入れた知見を記事にしていきます。
+記事の中で間違っている内容などいただけましたら幸いです。
 
 # 参考
 https://qiita.com/kyrieleison/items/8ef926faa4defa8fe930
+https://zenn.dev/linnefromice/articles/create-simple-dapps-with-hardhat-and-react-ts
+https://tech.mobilefactory.jp/entry/2019/12/04/163000
