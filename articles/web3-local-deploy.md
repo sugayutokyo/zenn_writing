@@ -1,5 +1,5 @@
 ---
-title: "スマートコントラクトのローカル環境構築をしてNext.js(Typescript)で使ってみる"
+title: "web3.jsでローカル環境にデプロイしたコントラクトをNext.js(Typescript)で使ってみる"
 emoji: "📝"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ['nextjs', 'web3', 'solidity', 'typescript']
