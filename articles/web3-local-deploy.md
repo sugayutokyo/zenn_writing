@@ -1,8 +1,8 @@
 ---
-title: "web3.jsでローカル環境にデプロイしたコントラクトをNext.jsで使ってみる"
+title: "web3.jsでローカル環境にデプロイしたコントラクトをNext.js(Typescript)で使ってみる"
 emoji: "📝"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ['nextjs', 'web3', 'solidity']
+topics: ['nextjs', 'web3', 'solidity', 'typescript']
 published: false
 ---
 
@@ -373,7 +373,17 @@ const Home: NextPage = () => {
 
 export default Home;
 ```
-コードについて解説
+
+* buildで生成されたJSONファイルをインポートする
+```ts
+import ZCContract from '../build/contracts/ZennCoin.json';
+```
+
+* インポートしたJSONファイルからabiを抽出
+```ts
+const ABI = ZCContract.abi as any as AbiItem;
+```
+
 * 以下のコードはhttp://127.0.0.1:7545を指定することでGanacheの開発用チェーンを指定しています。テストネットやメインネットを使用したい時にはhttp://127.0.0.1:7545の部分をそれぞれ変更すればOK
 ```ts
 const web3 = new Web3(new Web3.providers.HttpProvider(`http://127.0.0.1:7545`));
@@ -524,6 +534,8 @@ const walletAddressUserA = '0x7D4d7a0da0e8e1Dc90a86fDB82882a94190d89D6';
 const walletAddressUserB = '0x95a1D1A9fA7280E8A98c288a7bFD69EFdEFcD390';
 ```
 ![](https://i.gyazo.com/96280cff464bd0daee1bac1990e4cf33.png)
+※2回デプロイしたのでETHの残高が少なくなっています。分かりづらくて申し訳ありません。
+本記事を順番に進めているのであれば99.97と表示されるはずです！
 
 * contractインスタンスから指定したAddressのZennCoinの残高を取得する
 ```ts
@@ -537,8 +549,6 @@ web3.eth.getBalance(walletAddressUserA)
 2. 動作確認する
 「UserA 残高を取得」、「UserB 残高を取得」を謳歌することで下記GIFのように残高を取得することができたらOK
 ![](https://i.gyazo.com/16eb5a9cfbdb2aac99c37a116a1f7554.gif)
-※2回デプロイしたのでETHの残高が少なくなっています。分かりづらくて申し訳ありません。
-本記事を順番に進めているのであれば99978~と表示されるはずです！
 
 ### ZennCoinを移動させる
 1. pages/index.tsxを下記のように修正
@@ -600,10 +610,9 @@ contractFromA.methods.transfer(walletAddressUserB, 1000).send()
 ```
 
 2. 移動前の残高を確認する
-![](https://i.gyazo.com/7a3e309a6d6de9f1f4f15f02db870fae.png)
+![](https://i.gyazo.com/6161c52e92647945a25ab425ccea4c3e.png)
 
 3. 「Transfer ZennCoin From A To B」を押下後「UserA 残高を取得」「UserB 残高を取得」をそれぞれ押下して下記画像のようにZennCoinが1000移動していればOK
-
 ![](https://i.gyazo.com/34b70d1be72291324c6a5c85bd844276.png)
 
 ## エラーハンドリング
@@ -614,7 +623,7 @@ contractFromA.methods.transfer(walletAddressUserB, 1000).send()
 
 # 最後に
 今回はスマートコントラクトを作成し、独自通貨の取得、移動を行いました。私が所属している株式会社UPBONDではWeb3技術を使った開発を行っています。今後もWeb3技術で開発していく中で手に入れた知見を記事にしていきます。
-記事の中で間違っている内容などいただけましたら幸いです。
+記事の中で間違っている箇所がありましたらコメントをいただけたら幸いです。
 
 # 参考
 https://qiita.com/kyrieleison/items/8ef926faa4defa8fe930
